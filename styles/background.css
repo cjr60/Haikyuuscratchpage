@@ -1,0 +1,9 @@
+.background_image {
+    background-image: url('../newimage/Option3.png');
+    /* background-size: cover; */
+    background-repeat: repeat;
+    background-position: center;
+}
+.background_color {
+    background-color: orange;
+}

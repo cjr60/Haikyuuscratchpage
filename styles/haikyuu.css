@@ -1,0 +1,17 @@
+.bold{
+    font-weight: bold;
+}
+.italic{
+    font-style: italic;
+}
+.underline{
+    text-decoration: underline;
+}
+.font22{
+    font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color:black;
+}
+.fontcolor{
+    color: navy;
+    font-weight: bold;
+}

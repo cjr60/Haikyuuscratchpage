@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Clone</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ced4da;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #ffffff;
+        }
+        .cell.correct {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .cell.present {
+            background-color: #ffc107;
+            color: #ffffff;
+        }
+        .cell.absent {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+        }
+        .key {
+            padding: 10px;
+            border: 2px solid #ced4da;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .key.enter {
+            grid-column: span 2;
+        }
+        .key.backspace {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Haikyuu Wordle</h1>
+        <h5>Hint it's a 5 letter volleyball word</h5>
+        <div id="grid" class="grid"></div>
+        <div id="keyboard" class="keyboard"></div>
+    </div>
+    <script>
+        const words = ["spike", "serve", "block", "quick", "vball"];
+        const word = words[Math.floor(Math.random() * words.length)];
+        let currentRow = 0;
+        let currentGuess = "";
+
+        function createGrid() {
+            const grid = document.getElementById("grid");
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.setAttribute("data-row", i);
+                    cell.setAttribute("data-col", j);
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function createKeyboard() {
+            const keyboard = document.getElementById("keyboard");
+            const keys = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+            keys.push("Enter", "Backspace");
+            keys.forEach(key => {
+                const keyElement = document.createElement("div");
+                keyElement.classList.add("key");
+                keyElement.textContent = key;
+                keyElement.addEventListener("click", () => handleKeyPress(key));
+                if (key === "Enter") keyElement.classList.add("enter");
+                if (key === "Backspace") keyElement.classList.add("backspace");
+                keyboard.appendChild(keyElement);
+            });
+        }
+
+        function handleKeyPress(key) {
+            if (key === "Enter") {
+                if (currentGuess.length === 5) {
+                    checkGuess();
+                }
+            } else if (key === "Backspace") {
+                currentGuess = currentGuess.slice(0, -1);
+                updateGrid();
+            } else {
+                if (currentGuess.length < 5) {
+                    currentGuess += key.toLowerCase();
+                    updateGrid();
+                }
+            }
+        }
+
+        function updateGrid() {
+            for (let i = 0; i < 5; i++) {
+                const cell = document.querySelector(`.cell[data-row="${currentRow}"][data-col="${i}"]`);
+                cell.textContent = currentGuess[i] || "";
+            }
+        }
+
+        function checkGuess() {
+            for (let i = 0; i < 5; i++) {
+                const cell = document.querySelector(`.cell[data-row="${currentRow}"][data-col="${i}"]`);
+                if (currentGuess[i] === word[i]) {
+                    cell.classList.add("correct");
+                } else if (word.includes(currentGuess[i])) {
+                    cell.classList.add("present");
+                } else {
+                    cell.classList.add("absent");
+                }
+            }
+            if (currentGuess === word) {
+                alert("Congratulations! You guessed the word!");
+            } else if (currentRow === 5) {
+                alert(`Game over! The word was "${word}".`);
+            } else {
+                currentRow++;
+                currentGuess = "";
+            }
+        }
+
+        createGrid();
+        createKeyboard();
+    </script>
+</body>
+</html>
